@@ -1,0 +1,24 @@
+<!HTML>
+<html>
+    <head>
+        <script type="text/javascript" src="Complex.js"/></script>
+    <script type="text/javascript" src="mandelbrot.js"></script>
+    </head>
+    <body bgcolor="black">
+    <canvas id="canvas">
+        
+    </canvas>
+    <script type="text/javascript">
+        (function(){
+            var mandel = new Mandelbrot(640,480,"canvas",new Complex(-2.5,-1.2),new Complex(1,1.2),15);
+            window.addEventListener("click",zoom,false);
+            function zoom(e){
+                mandel.zoom(e.pageX,e.pageY,0.2);
+            }
+
+
+        })();
+        
+    </script>
+    </body>
+</html>

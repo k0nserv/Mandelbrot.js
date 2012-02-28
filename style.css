@@ -1,0 +1,64 @@
+/* 
+    Document   : style
+    Created on : Mar 8, 2011, 9:07:46 PM
+    Author     : hugo
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+p{
+    /**/
+}
+
+#settings{
+    
+}
+
+#settings label{
+    color:#FFF;
+    font-family:"Courier New";
+    margin-right: 5px;
+}
+#settings label,input,select{
+    margin-right:5px
+}
+
+
+#canvas{
+    border:2px solid #333;
+    margin-top: 15px;
+    display: none;
+}
+
+#info{
+    margin-top: 5px;
+    font-family:"Courier New";
+    font-weight: bold;
+    color: #fff;
+    float: left;
+    width: 350px;
+}
+#realTimeInfo{
+    color: #FFF;
+    font-family:"Courier New";
+    font-weight: bold;
+    float: left;
+    width: 350px;
+}
+#box{
+    height:250px;
+    width: 250px;
+    display:block;
+    border:1px solid #F00;
+
+}
+

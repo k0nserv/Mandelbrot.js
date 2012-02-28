@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script type="text/javascript" src="Complex.js"></script>
+        <script type="text/javascript" src="timer.js"></script>
+        <script type="text/javascript" src="color.js"></script>
+        <script type="text/javascript" src="mandelbrot.js"></script>
+                <link rel="stylesheet" href="style.css"/>
+    </head>
+    <body bgcolor="black">
+        <div id="settings">
+            <select id="dimensions">
+                <option>400*200</option>
+                <option>640*480</option>
+                <option>840*680</option>
+                <option>1024*768</option>
+                <option>1200*720</option>
+                <option>1440*900</option>
+                <option>1920*1080</option>
+            </select>
+            <label for="iterations">
+            Iterations:
+            </label>
+            <input type="text" value="15" size="5" id="iterations"/>
+            <label for="min">
+                Interval minimum:
+            </label>
+            <input type="text" value="-2.1-1.2i"  id="min"/>
+            <label for="max">
+                Interval maximum
+            </label>
+            <input type="text" value="1+1.2i" id="max"/>
+            <input type="button" value="Render" id="render"/>
+            <div id="wrapper">
+            <div id="info">
+                
+            </div>
+            <div id="realTimeInfo">
+                <p>X:<span id="xCoord"></span></p>
+                <p>Y:<span id="yCoord"></span></p>
+            </div>
+        </div>
+            <div style="clear:both"></div>
+        <canvas id="canvas">
+    </canvas>
+    <script type="text/javascript">
+        (function(){
+            //var mandel = new Mandelbrot(640,480,"canvas",new Complex(-2.5,-1.2),new Complex(1,1.2),15);
+            document.getElementById("canvas").addEventListener("mousemove",getCoords,false);
+            document.getElementById("canvas").addEventListener("mousedown",zoom,false);
+            document.getElementById("render").addEventListener("click",init ,false);
+            consoleFix();
+            var timer = new Timer();
+            var canvas  = document.getElementById("canvas");
+            var ctx     = canvas.getContext("2d");
+            var mandelBrot;
+            var clicks = {
+                x:undefined,
+                y:undefined,
+                down:false
+            }
+
+            function consoleFix(){
+                if ( typeof(console) !== "object" ){
+                    console = {};
+                    console.log = function(s){};
+                    return;
+                }
+                if ( typeof(console.log) !== "function" ){
+                    console.log = function(s){};
+                    return;
+                }
+            }
+
+            function zoom(e){
+                var coords = getRelativeCoords(e);
+                if ( clicks.x !== undefined && clicks.y !== undefined ){
+                        var x   = mandelBrot.xCoord(clicks.x);
+                        var y   = mandelBrot.yCoord(clicks.y);
+                        var x0  = mandelBrot.xCoord(coords.x);
+                        var y0  = mandelBrot.yCoord(clicks.y + ( ( coords.x - clicks.x )/mandelBrot.aspectRatio) );
+                        mandelBrot.zoom(x,y,x0,y0);
+                        clicks.x = undefined;
+                        clicks.y = undefined;  
+                        clicks.down = false;
+                        return;
+                }
+                clicks.x = coords.x;
+                clicks.y = coords.y;
+                clicks.down = true;
+            }
+
+            function getRelativeCoords(e){
+                var x;
+                var y;
+                if (e.pageX || e.pageY) { 
+                        x = e.pageX;
+                        y = e.pageY;
+                }
+                else { 
+                x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+                y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+                } 
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+                return {"x":x,"y":y};
+            }
+
+            
+            function getCoords(e){
+                var coords = getRelativeCoords(e);
+                var width       = coords.x - clicks.x;
+                var height      = width/mandelBrot.aspectRatio;
+                document.getElementById("xCoord").innerHTML = mandelBrot.xCoord(coords.x);
+                document.getElementById("yCoord").innerHTML = mandelBrot.yCoord(coords.y);
+                mandelBrot.draw();
+                ctx.strokeStyle="#FF0000";
+                ctx.strokeRect(clicks.x,clicks.y,width,height);
+            }
+            
+            function init(){   
+                var dimensions = document.getElementById("dimensions").value;
+                dimensions = dimensions.split("*");
+                var iterations = parseInt(document.getElementById("iterations").value);
+                var min = findComplex(document.getElementById("min").value);
+                var max = findComplex(document.getElementById("max").value);
+                mandelBrot = new Mandelbrot(parseInt(dimensions[0]),parseInt(dimensions[1]),"canvas",min,max,iterations,timer,function(){
+                    this.timer.end();
+                    document.getElementById("info").innerHTML = "<p>Render time: "+this.timer.delta()/1000+" seconds</p><p>Total iteration: "+this.totalIter+"</p>";
+                }); 
+            }
+            
+            function findComplex(s){
+                if ( typeof(s) === "string"){
+                    s = s.replace(/\s+/,"");
+                    var realRegExp = /^[+-]{0,1}([0-9]+\.[0-9]*|[0-9]*)/         //Find the real number
+                    var imaginaryRegExp = /[+-]+([0-9]+\.[0-9]*|[0-9]*)(?=i)/    //Find the imaginary number
+                    var re = s.match(realRegExp);
+                    var im = s.match(imaginaryRegExp);
+                    //console.log(re);
+                    //console.log(im);
+                    return new Complex(parseFloat(re[0]),parseFloat(im[0]));
+                }
+            }
+        
+            
+
+           
+        })();
+                    /*
+             * Test case for Chrome
+             */
+            function chromeTest(){
+                var image = document.getElementById("canvas").getContext("2d").createImageData(10,10);
+                var temp = [];
+                for ( var y = 0; y < 10; y++){
+                    for ( var x= 0; x < 10; x++){
+                        temp.push(255);
+                        temp.push(0);
+                        temp.push(0);
+                        temp.push(255);
+                    }
+                }
+                image.data = temp;
+                document.getElementById("canvas").getContext("2d").putImageData(image,0,0);
+            }
+    </script>
+    </body>
+</html>
