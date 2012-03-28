@@ -4,12 +4,13 @@ Mandelbrot set generator.
 Author:Hugo Tunius ( hugotunius.se )
 */
 
-function Mandelbrot(w,h,canvas,min,max,iter,timer,callback){
+function Mandelbrot(w,h,canvas,min,max,iter,timer,hue,callback){
     this.width  = (w !== undefined && w !== null) ? w:0;
     this.height = (h !== undefined && h !== null) ? h:0;
     this.canvas = (typeof(canvas) === "object") ? canvas:document.getElementById(canvas);
     this.min    = min;
     this.max    = max;
+    this.hue    = hue;
     this.iter   = iter;
     this.aspectRatio = w/h;
     console.log(w/h);
@@ -73,19 +74,21 @@ Mandelbrot.prototype.done = function(){
 Mandelbrot.prototype.iterate = function(x,y){
     var z = new Complex(0,0);
     var c = new Complex(x,y);
+    var i;
     for ( var k = 0; k < this.iter ; k++){
         this.totalIter++;
+        i++;
         /*
          * P(Z) = z^2 +c
          */
         z = z.square();
         z = z.add(c);
-        if ( z.dot() > 4 ){
+        if ( z.dot() > 400 ){
             this.lastZ = z;
             return k;
         }
     }
-    return this.iter;
+    return i;
 }
 
 Mandelbrot.prototype.zoom = function(x,y,x0,y0){
@@ -117,14 +120,14 @@ Mandelbrot.prototype.calculateColor = function(color){
             return [r,g,b,a];
         }
         else{
-            var b = 180;
-            var r = 0 + 20 + ( color % 255) ;
-            var g = 0 + 20 + ( color % 255) ;
+            var b = 128*this.smoothColor(color);
+            var r = 255*this.smoothColor(color);
+            var g = 32*this.smoothColor(color);
             var a = 255;
         }
-        var array = hslToRgb( 225 - color % this.iter ,100,40);
+        var array = hslToRgb(200+360*this.smoothColor(color) ,90,40);
         array[3] = 255;
-        return [r,g,b,a];
+        return array;
     }
 }
 
@@ -136,7 +139,8 @@ Mandelbrot.prototype.calculateScale = function(){
 }
 
 Mandelbrot.prototype.smoothColor = function(k){
-    return k + 1  - Math.log(Math.log(this.lastZ.abs())/Math.log(this.iter));
+    //return k - Math.log(Math.log(this.lastZ.abs()))/this.iter
+    return (k + 1  - Math.log(Math.log(this.lastZ.abs())/Math.log(4)))/this.iter;
 }
 
 Mandelbrot.prototype.xCoord = function(x){;

@@ -30,6 +30,7 @@
                 Interval maximum
             </label>
             <input type="text" value="1+1.2i" id="max"/>
+            <input type="text" value="0" id="hue"/>
             <input type="button" value="Render" id="render"/>
             <div id="wrapper">
             <div id="info">
@@ -124,7 +125,8 @@
                 var iterations = parseInt(document.getElementById("iterations").value);
                 var min = findComplex(document.getElementById("min").value);
                 var max = findComplex(document.getElementById("max").value);
-                mandelBrot = new Mandelbrot(parseInt(dimensions[0]),parseInt(dimensions[1]),"canvas",min,max,iterations,timer,function(){
+                var hue = parseInt(document.getElementById("hue").value);
+                mandelBrot = new Mandelbrot(parseInt(dimensions[0]),parseInt(dimensions[1]),"canvas",min,max,iterations,timer,hue,function(){
                     this.timer.end();
                     document.getElementById("info").innerHTML = "<p>Render time: "+this.timer.delta()/1000+" seconds</p><p>Total iteration: "+this.totalIter+"</p>";
                 }); 
