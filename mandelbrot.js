@@ -125,7 +125,7 @@ Mandelbrot.prototype.calculateColor = function(color){
             var g = 32*this.smoothColor(color);
             var a = 255;
         }
-        var array = hslToRgb(200+360*this.smoothColor(color) ,90,40);
+        var array = hslToRgb(this.hue+360*this.smoothColor(color) ,90,40);
         array[3] = 255;
         return array;
     }
