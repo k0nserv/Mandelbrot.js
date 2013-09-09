@@ -1,8 +1,6 @@
 Mandelbrot.js
 ============
 A simple mandelbrot fractal generator using HTML 5 Canvas.
-It's currently hosted [here](http://hugotunius.se/mandelbrot/)
-
 
 License
 --------
