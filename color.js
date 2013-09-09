@@ -1,5 +1,3 @@
-
-
 var hslToRgb = function(h0,s0,l0){
     var h = h0/ 360;
     var s = s0/ 100;
@@ -16,7 +14,7 @@ var hslToRgb = function(h0,s0,l0){
     var r = Math.round(hueToRgb(p, q, tr) * 255);
     var g = Math.round(hueToRgb(p, q, tg) * 255);
     var b = Math.round(hueToRgb(p, q, tb) * 255);
-    return [r, g, b];   
+    return [r, g, b];
 }
 
 var hueToRgb =  function(p, q, h) {
