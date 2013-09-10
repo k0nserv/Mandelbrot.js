@@ -20,7 +20,6 @@
             this.canvas.height = this.height;
         }
         this.img = this.context.createImageData(this.width, this.height);
-        this.pixels = [];
         this.scale = this.calculateScale();
         this.render();
     };
@@ -35,12 +34,12 @@
 
         for (var y = 0; y < this.height; y++) {
             for (var x = 0; x < this.width; x++) {
-                color = this.iterate(x0, y0);
-                rgba = this.calculateColor(color);
-                this.img.data[index] = rgba[0];
+                color   = this.iterate(x0, y0);
+                rgba    = this.calculateColor(color);
+                this.img.data[index]     = rgba[0];
                 this.img.data[index + 1] = rgba[1];
                 this.img.data[index + 2] = rgba[2];
-                this.img.data[index + 3] = rgba[3];
+                this.img.data[index + 3] = 255;
                 index += 4;
                 x0 += this.scale.xS;
             }
@@ -58,13 +57,13 @@
         if (this.timer !== undefined) {
             this.timer.end();
         }
-        if (typeof(this.callback) === "function" && this.callback !== undefined) {
+        if (typeof(this.callback) === "function") {
             this.callback.apply(this);
         }
     };
 
     Mandelbrot.prototype.iterate = function(x, y) {
-        var z = new Complex(0, 0),
+        var z = new Complex(0.0, 0.0),
             c = new Complex(x, y),
             i,
             maxIter = this.iter;
@@ -75,13 +74,14 @@
             /*
              * P(Z) = z^2 +c
              */
-            z = z.square();
-            z = z.add(c);
+            z.mSquare();
+            z.mAdd(c);
             if (z.dot() > 400) {
                 this.lastZ = z;
                 return k;
             }
         }
+
         return i;
     };
 
@@ -119,7 +119,6 @@
                 a = 255;
             }
             array = hslToRgb(this.hue + 360 * this.smoothColor(color), 90, 40);
-            array[3] = 255;
 
             return array;
         }
