@@ -1,20 +1,21 @@
 var hslToRgb = function(h0,s0,l0){
-    var h = h0/ 360;
-    var s = s0/ 100;
-    var l = l0/ 100;
+    var h = h0/ 360,
+    s = s0/ 100,
+    l = l0/ 100,
+    q, p, tr, tg, tb, result = new Array(3);
 
-    if (l <= 0.5) var q = l * (1 + s);
-    else var q = l + s - (l * s);
+    if (l <= 0.5) q = l * (1 + s);
+    else q = l + s - (l * s);
 
-    var p = 2 * l - q;
-    var tr = h + (1 / 3);
-    var tg = h;
-    var tb = h - (1 / 3);
+    p = 2 * l - q;
+    tr = h + (1 / 3);
+    tg = h;
+    tb = h - (1 / 3);
 
-    var r = Math.round(hueToRgb(p, q, tr) * 255);
-    var g = Math.round(hueToRgb(p, q, tg) * 255);
-    var b = Math.round(hueToRgb(p, q, tb) * 255);
-    return [r, g, b];
+    result[0] = Math.round(hueToRgb(p, q, tr) * 255);
+    result[1] = Math.round(hueToRgb(p, q, tg) * 255);
+    result[2] = Math.round(hueToRgb(p, q, tb) * 255);
+    return result;
 }
 
 var hueToRgb =  function(p, q, h) {
