@@ -34,14 +34,14 @@
             <input type="text" value="1+1.2i" title="max coordinates" id="max"/>
             <input type="text" placeholder="Hue" title="Hue" id="hue"/>
             <input type="button" value="Render" class="btn btn-primary" id="render"/>
-            <div id="wrapper">
-                <div id="info">
+        </div>
+        <div id="wrapper">
+            <div id="info">
 
-                </div>
-                <div id="realTimeInfo">
-                    <p>X:<span id="xCoord"></span></p>
-                    <p>Y:<span id="yCoord"></span></p>
-                </div>
+            </div>
+            <div id="realTimeInfo">
+                <p>X:<span id="xCoord"></span></p>
+                <p>Y:<span id="yCoord"></span></p>
             </div>
         </div>
         <div style="clear:both"></div>
@@ -53,16 +53,16 @@
                 document.getElementById("canvas").addEventListener("mousemove",getCoords,false);
                 document.getElementById("canvas").addEventListener("mousedown",zoom,false);
                 document.getElementById("render").addEventListener("click",init ,false);
-                
+
                 var inputs = document.getElementsByTagName("input");
-                
+
                 for ( var x = 0; x < inputs.length; x++){
                     inputs[x].addEventListener("keydown",function(e){
                         if ( e.keyCode == 13)
                             init();
                     });
                 }
-                
+
                 consoleFix();
                 var timer = new Timer();
                 var canvas  = document.getElementById("canvas");
@@ -75,14 +75,11 @@
                 }
 
                 function consoleFix(){
-                    if ( typeof(console) !== "object" ){
-                        console = {};
-                        console.log = function(s){};
-                        return;
+                    if ( typeof(window.console) !== "object" ){
+                        window.console = {};
                     }
-                    if ( typeof(console.log) !== "function" ){
-                        console.log = function(s){};
-                        return;
+                    if ( typeof(window.console.log) !== "function" ){
+                        window.console.log = function(s){};
                     }
                 }
 
@@ -95,7 +92,7 @@
                         var y0  = mandelBrot.yCoord(clicks.y + ( ( coords.x - clicks.x )/mandelBrot.aspectRatio) );
                         mandelBrot.zoom(x,y,x0,y0);
                         clicks.x = undefined;
-                        clicks.y = undefined;  
+                        clicks.y = undefined;
                         clicks.down = false;
                         return;
                     }
@@ -107,20 +104,20 @@
                 function getRelativeCoords(e){
                     var x;
                     var y;
-                    if (e.pageX || e.pageY) { 
+                    if (e.pageX || e.pageY) {
                         x = e.pageX;
                         y = e.pageY;
                     }
-                    else { 
-                        x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
-                        y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
-                    } 
+                    else {
+                        x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                        y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                    }
                     x -= canvas.offsetLeft;
                     y -= canvas.offsetTop;
                     return {"x":x,"y":y};
                 }
 
-            
+
                 function getCoords(e){
                     var coords = getRelativeCoords(e);
                     var width       = coords.x - clicks.x;
@@ -131,8 +128,8 @@
                     ctx.strokeStyle="#FF0000";
                     ctx.strokeRect(clicks.x,clicks.y,width,height);
                 }
-            
-                function init(){   
+
+                function init(){
                     var dimensions = document.getElementById("dimensions").value;
                     dimensions = dimensions.split("*");
                     var iterations = parseInt(document.getElementById("iterations").value);
@@ -142,9 +139,9 @@
                     mandelBrot = new Mandelbrot(parseInt(dimensions[0]),parseInt(dimensions[1]),"canvas",min,max,iterations,timer,hue,function(){
                         this.timer.end();
                         document.getElementById("info").innerHTML = "<p>Render time: "+this.timer.delta()/1000+" seconds</p><p>Total iteration: "+this.totalIter+"</p>";
-                    }); 
+                    });
                 }
-            
+
                 function findComplex(s){
                     if ( typeof(s) === "string"){
                         s = s.replace(/\s+/,"");
@@ -157,28 +154,7 @@
                         return new Complex(parseFloat(re[0]),parseFloat(im[0]));
                     }
                 }
-        
-            
-
-           
             })();
-            /*
-             * Test case for Chrome
-             */
-            function chromeTest(){
-                var image = document.getElementById("canvas").getContext("2d").createImageData(10,10);
-                var temp = [];
-                for ( var y = 0; y < 10; y++){
-                    for ( var x= 0; x < 10; x++){
-                        temp.push(255);
-                        temp.push(0);
-                        temp.push(0);
-                        temp.push(255);
-                    }
-                }
-                image.data = temp;
-                document.getElementById("canvas").getContext("2d").putImageData(image,0,0);
-            }
         </script>
     </body>
 </html>
